@@ -21,7 +21,8 @@ def create_app(): #create app함수가 app 객체를 생성해 반환하도록 �
     from . import models
 
     # 블루프린트
-    from .views import main_views
+    from .views import main_views , question_views, answer_views
     app.register_blueprint(main_views.bp)
-
+    app.register_blueprint(question_views.bp)
+    app.register_blueprint(answer_views.bp)
     return app
