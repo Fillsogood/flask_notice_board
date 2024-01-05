@@ -17,6 +17,9 @@
             <td>{{ question_list.total - ((question_list.page-1) * question_list.per_page) - loop.index0 }}</td> <!--질문이 등록 될 때 마다 index 번호가 하나씩 늘어남-->
             <td>
                 <a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a>
+                {% if question.answer_set|length > 0 %} <!--답변이 있는 경우를 검사-->
+                <span class="text-danger small mx-2">{{ question.answer_set|length }}</span> <!--답변 개수를 표시-->
+                {% endif %}
             </td>
             <td>{{ question.create_date|datetime }}</td> <!--작성일시-->
         </tr>
