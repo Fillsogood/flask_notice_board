@@ -18,7 +18,7 @@
             <td>
                 <a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a>
             </td>
-            <td>{{ question.create_date }}</td> <!--작성일시-->
+            <td>{{ question.create_date|datetime }}</td> <!--작성일시-->
         </tr>
         {% endfor %}
         {% else %}
