@@ -14,3 +14,9 @@ class Answer(db.Model):
     question = db.relationship('Question', backref=db.backref('answer_set'))
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True) #아이디가 자동으로 증가 하는 User모델의 기본키
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)#unique True로 설정하면 같은 값을 저장할 수 없게 만듬
