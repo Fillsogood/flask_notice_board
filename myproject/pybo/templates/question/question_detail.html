@@ -1,8 +1,10 @@
+<!--url_for 함수는 URL추적함수지만 정적 파일의 URL도 찾아준다.-->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
 <h1>{{ question.subject }}</h1>
 <div>
     {{ question.content }}
 </div>
-<h5>{{ question.answer_set|length }}개의 답변이 있습니다.</h5>
+<h5>{{ question.answer_set|length }}개의 답변이 있습니다.</h5> <!--답변 개수를 의미한다. 템플릿 필터는 |문자 뒤에 추가해서 사용-->
 <div>
     <ul>
     {% for answer in question.answer_set %}
