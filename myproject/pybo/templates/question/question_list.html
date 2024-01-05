@@ -1,4 +1,5 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+{% extends 'base.html' %} <!--질문 목록 템플릿 수정 및 base.html을 상속 받았으므로 html 구조를 갖춤-->
+{% block content %}
 <div class="container my-3">
     <table class="table">
         <thead>
@@ -9,14 +10,14 @@
         </tr>
         </thead>
         <tbody>
-        {% if question_list %}
-        {% for question in question_list %}
+        {% if question_list %} <!--질문 목록이 있는지 검사-->
+        {% for question in question_list %} <!--질문 목록에 있는 객체를 하나씩 꺼내서 question 객체에 하나씩 넣음-->
         <tr>
-            <td>{{ loop.index }}</td>
+            <td>{{ loop.index }}</td> <!--질문이 등록 될 때 마다 index 번호가 하나씩 늘어남-->
             <td>
                 <a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a>
             </td>
-            <td>{{ question.create_date }}</td>
+            <td>{{ question.create_date }}</td> <!--작성일시-->
         </tr>
         {% endfor %}
         {% else %}
@@ -26,4 +27,6 @@
         {% endif %}
         </tbody>
     </table>
+    <a href="{{ url_for('question.create') }}" class="btn btn-primary">질문 등록하기</a>
 </div>
+{% endblock %}

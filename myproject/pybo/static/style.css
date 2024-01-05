@@ -1,7 +1,0 @@
-/*텍스는 넓이를 최대로 넓히고 답변등록 버튼위에 마진을 10px 추가*/
-textarea {
-    width:100%; 
-}
-input[type=submit] {
-    margin-top:10px;
-}

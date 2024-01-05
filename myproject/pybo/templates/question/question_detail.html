@@ -1,5 +1,5 @@
-<!--url_for 함수는 URL추적함수지만 정적 파일의 URL도 찾아준다.-->
-<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+{% extends 'base.html' %}
+{% block content %}
 <div class="container my-3">
     <!-- 질문 -->
     <h2 class="border-bottom py-2">{{ question.subject }}</h2>
@@ -30,8 +30,24 @@
     <!-- 답변 등록 -->
     <form action="{{ url_for('answer.create', question_id=question.id) }}" method="post" class="my-3">
         <div class="mb-3">
+            {{ form.csrf_token }}
+            <!-- 오류표시 Start -->
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for field, errors in form.errors.items() %}
+                <strong>{{ form[field].label }}</strong>
+                <ul>
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <!-- 오류표시 End -->
             <textarea name="content" id="content" class="form-control" rows="10"></textarea>
         </div>
         <input type="submit" value="답변등록" class="btn btn-primary">
     </form>
 </div>
+{% endblock %}
