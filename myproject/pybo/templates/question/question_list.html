@@ -11,7 +11,8 @@
         </thead>
         <tbody>
         {% if question_list %} <!--질문 목록이 있는지 검사-->
-        {% for question in question_list %} <!--질문 목록에 있는 객체를 하나씩 꺼내서 question 객체에 하나씩 넣음-->
+        <!--Pagination객체는 현재 조회된 목록데이터를 가져오기 위해서는 items 함수를 호출해야 한다.-->
+        {% for question in question_list.items %} <!--질문 목록에 있는 객체를 하나씩 꺼내서 question 객체에 하나씩 넣음-->
         <tr>
             <td>{{ loop.index }}</td> <!--질문이 등록 될 때 마다 index 번호가 하나씩 늘어남-->
             <td>
@@ -27,6 +28,48 @@
         {% endif %}
         </tbody>
     </table>
+    <!-- 페이징처리 시작 -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if question_list.has_prev %} <!--이전 페이지가 있는지 체크-->
+        <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.prev_num }}">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="javascript:void(0)">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지번호 -->
+        {% for page_num in question_list.iter_pages() %} <!--페이지 리스트 루프-->
+        {% if page_num %}
+        {% if page_num != question_list.page %} <!--현재 페이지와 같은지 체크-->
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="javascript:void(0)">{{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% else %}
+        <li class="disabled">
+            <a class="page-link" href="javascript:void(0)">...</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if question_list.has_next %}<!--다음 페이지가 있는지 체크-->
+        <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.next_num }}">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="javascript:void(0)">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <!-- 페이징처리 끝 -->
     <a href="{{ url_for('question.create') }}" class="btn btn-primary">질문 등록하기</a>
 </div>
 {% endblock %}

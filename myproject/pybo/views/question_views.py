@@ -12,9 +12,13 @@ bp = Blueprint('question', __name__, url_prefix='/question') #여기서 main_vie
 #render_template함수는 HTML파일을 렌더링하여 클라이언트에게 전송하는 역할
 @bp.route('/list/')
 def _list():
-     #질문 목록 데이터/order_by는 결과를 정렬하는 함수
+    page = request.args.get('page', type=int, default=1)  # 페이지
+    #질문 목록 데이터/order_by는 결과를 정렬하는 함수
     #order_by(Question.create_date.desc())의 의미는 조회된 데이터를 작성일시 기준으로 역순으로 정렬하라는 의미.
     question_list = Question.query.order_by(Question.create_date.desc())
+    #이 함수의 1번째 인수로 전달된 page는 현재 조회할 페이지의 번호를 의미하고,
+    #2번째 인수 per_page로 전달된 10은 페이지마다 보여 줄 게시물이 10건임을 의미한다.
+    question_list = question_list.paginate(page=page, per_page=10)
     return render_template('question/question_list.html', question_list=question_list)
 
 
