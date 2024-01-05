@@ -14,7 +14,7 @@
         <!--Pagination객체는 현재 조회된 목록데이터를 가져오기 위해서는 items 함수를 호출해야 한다.-->
         {% for question in question_list.items %} <!--질문 목록에 있는 객체를 하나씩 꺼내서 question 객체에 하나씩 넣음-->
         <tr>
-            <td>{{ loop.index }}</td> <!--질문이 등록 될 때 마다 index 번호가 하나씩 늘어남-->
+            <td>{{ question_list.total - ((question_list.page-1) * question_list.per_page) - loop.index0 }}</td> <!--질문이 등록 될 때 마다 index 번호가 하나씩 늘어남-->
             <td>
                 <a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a>
             </td>
