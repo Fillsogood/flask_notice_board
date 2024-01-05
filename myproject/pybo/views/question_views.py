@@ -1,7 +1,7 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, url_for
+from flask import Blueprint, render_template, request, url_for, g
 from werkzeug.utils import redirect
-
+from pybo.views.auth_views import login_required
 from .. import db
 from pybo.forms import QuestionForm, AnswerForm
 from pybo.models import Question
@@ -29,6 +29,7 @@ def detail(question_id):
     return render_template('question/question_detail.html', question=question, form=form)
 
 @bp.route('/create/',methods=('GET', 'POST'))
+@login_required
 def create():
     form = QuestionForm() #인스턴스화
     #request.method는 create 함수로 요청된 전송 방식을 의미한다.
@@ -37,7 +38,7 @@ def create():
     #질문 등록하기 누르면 get방식 요청이므로 질문 등록 화면을 보여주고
     #저장하기 버튼을 누르면 post방식 요청이므로 데이터베이스에 질문을 저장한다.
     if request.method == 'POST' and form.validate_on_submit():
-        question = Question(subject=form.subject.data, content=form.content.data, create_date=datetime.now())
+        question = Question(subject=form.subject.data, content=form.content.data, create_date=datetime.now(), user=g.user)
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('main.index'))
