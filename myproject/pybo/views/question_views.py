@@ -1,25 +1,38 @@
 from datetime import datetime
+
 from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
-from pybo.views.auth_views import login_required
-from .. import db
-from pybo.forms import QuestionForm, AnswerForm
-from pybo.models import Question
 
+from pybo import db
+from pybo.forms import QuestionForm, AnswerForm
+from pybo.models import Question, Answer, User
+from pybo.views.auth_views import login_required
 
 bp = Blueprint('question', __name__, url_prefix='/question') #여기서 main_views.py 매핑 구별
+
 
 #render_template함수는 HTML파일을 렌더링하여 클라이언트에게 전송하는 역할
 @bp.route('/list/')
 def _list():
-    page = request.args.get('page', type=int, default=1)  # 페이지
-    #질문 목록 데이터/order_by는 결과를 정렬하는 함수
-    #order_by(Question.create_date.desc())의 의미는 조회된 데이터를 작성일시 기준으로 역순으로 정렬하라는 의미.
+    page = request.args.get('page', type=int, default=1)
+    kw = request.args.get('kw', type=str, default='')
     question_list = Question.query.order_by(Question.create_date.desc())
-    #이 함수의 1번째 인수로 전달된 page는 현재 조회할 페이지의 번호를 의미하고,
-    #2번째 인수 per_page로 전달된 10은 페이지마다 보여 줄 게시물이 10건임을 의미한다.
+    if kw:
+        search = '%%{}%%'.format(kw)
+        sub_query = db.session.query(Answer.question_id, Answer.content, User.username) \
+            .join(User, Answer.user_id == User.id).subquery()
+        question_list = question_list \
+            .join(User) \
+            .outerjoin(sub_query, sub_query.c.question_id == Question.id) \
+            .filter(Question.subject.ilike(search) |  # 질문 제목
+                    Question.content.ilike(search) |  # 질문 내용
+                    User.username.ilike(search) |  # 질문 작성자
+                    sub_query.c.content.ilike(search) |  # 답변 내용
+                    sub_query.c.username.ilike(search)  # 답변 작성자
+                    ) \
+            .distinct()
     question_list = question_list.paginate(page=page, per_page=10)
-    return render_template('question/question_list.html', question_list=question_list)
+    return render_template('question/question_list.html', question_list=question_list, page=page, kw=kw)
 
 
 @bp.route('/detail/<int:question_id>/')
@@ -61,6 +74,7 @@ def modify(question_id):
     else:  # GET 요청
         form = QuestionForm(obj=question)
     return render_template('question/question_form.html', form=form)
+
 
 @bp.route('/delete/<int:question_id>')
 @login_required
