@@ -9,6 +9,7 @@ class Question(db.Model):#db.Model
     #user속성은 Question 모델에서 User 모델을 참조하기 위한 속성이다.
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('question_set'))
+    modify_date = db.Column(db.DateTime(), nullable=True)
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,6 +21,7 @@ class Answer(db.Model):
     create_date = db.Column(db.DateTime(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('answer_set'))
+    modify_date = db.Column(db.DateTime(), nullable=True)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True) #아이디가 자동으로 증가 하는 User모델의 기본키
