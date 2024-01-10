@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+from flaskext.markdown import Markdown
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
@@ -42,4 +43,6 @@ def create_app(): #create app함수가 app 객체를 생성해 반환하도록 �
     from .filter import format_datetime
     app.jinja_env.filters['datetime'] = format_datetime
 
+    # markdown
+    Markdown(app, extensions=['nl2br', 'fenced_code'])
     return app
